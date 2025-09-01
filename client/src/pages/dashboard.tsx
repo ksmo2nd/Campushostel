@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { useQuery } from "@tanstack/react-query";
 import { useState as useStateHook } from "react";
 import { Home, Map, Calendar, BarChart3, Menu } from "lucide-react";
@@ -74,38 +75,39 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation Header */}
-      <header className="bg-white shadow-sm border-b border-border sticky top-0 z-50" data-testid="header-dashboard">
+      <header className="bg-background/95 backdrop-blur-md shadow-sm border-b-2 border-border sticky top-0 z-50" data-testid="header-dashboard">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <span className="text-2xl font-bold text-primary" data-testid="text-logo">CampusHostel</span>
+                <span className="text-2xl font-bold text-gradient" data-testid="text-logo">CampusHostel</span>
               </div>
             </div>
             
             <div className="hidden md:block">
-              <div className="ml-10 flex items-baseline space-x-4">
-                <a href="#" className="text-foreground hover:text-primary px-3 py-2 rounded-md text-sm font-medium" data-testid="link-browse-hostels">Browse Hostels</a>
+              <div className="ml-10 flex items-baseline space-x-6">
+                <a href="#" className="text-foreground hover:text-primary px-3 py-2 rounded-lg text-sm font-medium transition-colors" data-testid="link-browse-hostels">Browse Hostels</a>
                 {user?.role === 'agent' && (
-                  <a href="#" className="text-muted-foreground hover:text-primary px-3 py-2 rounded-md text-sm font-medium" data-testid="link-list-property">List Property</a>
+                  <a href="#" className="text-muted-foreground hover:text-foreground px-3 py-2 rounded-lg text-sm font-medium transition-colors" data-testid="link-list-property">List Property</a>
                 )}
-                <a href="#" className="text-muted-foreground hover:text-primary px-3 py-2 rounded-md text-sm font-medium" data-testid="link-help">Help</a>
+                <a href="#" className="text-muted-foreground hover:text-foreground px-3 py-2 rounded-lg text-sm font-medium transition-colors" data-testid="link-help">Help</a>
               </div>
             </div>
             
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-muted-foreground" data-testid="text-user-welcome">
+              <span className="text-sm text-muted-foreground font-medium" data-testid="text-user-welcome">
                 Welcome, {user?.firstName || user?.email}
               </span>
+              <ThemeToggle />
               <Button 
                 onClick={handleLogout}
                 variant="outline"
-                className="text-sm"
+                className="text-sm border-2 hover:bg-primary hover:text-primary-foreground transition-all focus-ring"
                 data-testid="button-logout"
               >
                 Sign Out
               </Button>
-              <Button variant="ghost" size="sm" className="md:hidden" data-testid="button-menu-mobile">
+              <Button variant="ghost" size="sm" className="md:hidden hover:bg-secondary" data-testid="button-menu-mobile">
                 <Menu className="h-4 w-4" />
               </Button>
             </div>
@@ -116,37 +118,37 @@ export default function Dashboard() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs defaultValue="hostels" className="w-full">
-          <TabsList className="grid w-full grid-cols-4" data-testid="tabs-navigation">
-            <TabsTrigger value="hostels" className="flex items-center gap-2" data-testid="tab-hostels">
+          <TabsList className="grid w-full grid-cols-4 bg-secondary/50 p-1 rounded-xl border-2 border-border/50" data-testid="tabs-navigation">
+            <TabsTrigger value="hostels" className="flex items-center gap-2 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all" data-testid="tab-hostels">
               <Home className="h-4 w-4" />
-              <span className="hidden sm:inline">Browse Hostels</span>
+              <span className="hidden sm:inline font-medium">Browse Hostels</span>
             </TabsTrigger>
-            <TabsTrigger value="map" className="flex items-center gap-2" data-testid="tab-map">
+            <TabsTrigger value="map" className="flex items-center gap-2 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all" data-testid="tab-map">
               <Map className="h-4 w-4" />
-              <span className="hidden sm:inline">Map View</span>
+              <span className="hidden sm:inline font-medium">Map View</span>
             </TabsTrigger>
-            <TabsTrigger value="bookings" className="flex items-center gap-2" data-testid="tab-bookings">
+            <TabsTrigger value="bookings" className="flex items-center gap-2 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all" data-testid="tab-bookings">
               <Calendar className="h-4 w-4" />
-              <span className="hidden sm:inline">My Bookings</span>
+              <span className="hidden sm:inline font-medium">My Bookings</span>
             </TabsTrigger>
-            <TabsTrigger value="dashboard" className="flex items-center gap-2" data-testid="tab-dashboard">
+            <TabsTrigger value="dashboard" className="flex items-center gap-2 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all" data-testid="tab-dashboard">
               <BarChart3 className="h-4 w-4" />
-              <span className="hidden sm:inline">Dashboard</span>
+              <span className="hidden sm:inline font-medium">Dashboard</span>
             </TabsTrigger>
           </TabsList>
 
           {/* Hostel Listings Tab */}
-          <TabsContent value="hostels" className="space-y-6" data-testid="content-hostels">
+          <TabsContent value="hostels" className="space-y-8 mt-8" data-testid="content-hostels">
             {/* Filters */}
-            <Card data-testid="card-filters">
-              <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4 p-6">
+            <Card className="border-2 border-border/50 shadow-lg" data-testid="card-filters">
+              <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-6 p-8">
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2" data-testid="label-area">Area</label>
+                  <label className="block text-sm font-semibold text-foreground mb-3" data-testid="label-area">Area</label>
                   <Select value={selectedArea} onValueChange={setSelectedArea}>
-                    <SelectTrigger className="w-full" data-testid="select-area">
+                    <SelectTrigger className="w-full h-12 rounded-lg border-2 focus-ring" data-testid="select-area">
                       <SelectValue placeholder="All areas" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="rounded-lg">
                       <SelectItem value="westend" data-testid="option-westend">Westend</SelectItem>
                       <SelectItem value="safari" data-testid="option-safari">Safari</SelectItem>
                       <SelectItem value="chapel-road" data-testid="option-chapel-road">Chapel Road</SelectItem>
@@ -154,12 +156,12 @@ export default function Dashboard() {
                   </Select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2" data-testid="label-room-type">Room Type</label>
+                  <label className="block text-sm font-semibold text-foreground mb-3" data-testid="label-room-type">Room Type</label>
                   <Select value={roomType} onValueChange={setRoomType}>
-                    <SelectTrigger className="w-full" data-testid="select-room-type">
+                    <SelectTrigger className="w-full h-12 rounded-lg border-2 focus-ring" data-testid="select-room-type">
                       <SelectValue placeholder="Any type" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="rounded-lg">
                       <SelectItem value="single" data-testid="option-single">Single Room</SelectItem>
                       <SelectItem value="shared" data-testid="option-shared">Shared Room</SelectItem>
                       <SelectItem value="self-contain" data-testid="option-self-contain">Self Contain</SelectItem>
@@ -167,12 +169,12 @@ export default function Dashboard() {
                   </Select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2" data-testid="label-amenities">Amenities</label>
+                  <label className="block text-sm font-semibold text-foreground mb-3" data-testid="label-amenities">Amenities</label>
                   <Select value={amenities} onValueChange={setAmenities}>
-                    <SelectTrigger className="w-full" data-testid="select-amenities">
+                    <SelectTrigger className="w-full h-12 rounded-lg border-2 focus-ring" data-testid="select-amenities">
                       <SelectValue placeholder="Any amenities" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="rounded-lg">
                       <SelectItem value="wifi" data-testid="option-wifi">WiFi</SelectItem>
                       <SelectItem value="generator" data-testid="option-generator">Generator</SelectItem>
                       <SelectItem value="water" data-testid="option-water">24/7 Water</SelectItem>
@@ -182,7 +184,7 @@ export default function Dashboard() {
                 <div className="flex items-end">
                   <Button 
                     variant="secondary" 
-                    className="w-full"
+                    className="w-full h-12 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg font-semibold transition-all focus-ring shadow-md"
                     data-testid="button-apply-filters"
                   >
                     Apply Filters
