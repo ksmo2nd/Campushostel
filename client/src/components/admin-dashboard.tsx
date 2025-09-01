@@ -1,0 +1,187 @@
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
+import { isUnauthorizedError } from "@/lib/authUtils";
+import { Users, CheckCircle, XCircle, Home } from "lucide-react";
+
+export default function AdminDashboard() {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const { data: pendingAgents = [], isLoading } = useQuery({
+    queryKey: ["/api/admin/pending-agents"],
+  });
+
+  const verifyMutation = useMutation({
+    mutationFn: async (agentId: string) => {
+      await apiRequest("POST", `/api/admin/verify-agent/${agentId}`, {});
+    },
+    onSuccess: () => {
+      toast({
+        title: "Agent Verified",
+        description: "Agent has been successfully verified.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/pending-agents"] });
+    },
+    onError: (error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Unauthorized",
+          description: "You are logged out. Logging in again...",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          window.location.href = "/api/login";
+        }, 500);
+        return;
+      }
+      toast({
+        title: "Verification Failed",
+        description: "Failed to verify agent. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleVerifyAgent = (agentId: string) => {
+    verifyMutation.mutate(agentId);
+  };
+
+  const handleRejectAgent = (agentId: string) => {
+    // TODO: Implement agent rejection
+    toast({
+      title: "Feature Coming Soon",
+      description: "Agent rejection functionality will be implemented soon.",
+    });
+  };
+
+  return (
+    <div className="space-y-6" data-testid="admin-dashboard">
+      <Card data-testid="card-admin-overview">
+        <CardContent className="p-6">
+          <h2 className="text-xl font-semibold text-foreground mb-6">Admin Dashboard</h2>
+          
+          {/* System Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+            <div className="text-center" data-testid="stat-total-users">
+              <div className="text-2xl font-bold text-primary mb-2" data-testid="stat-total-users-count">
+                -
+              </div>
+              <div className="text-muted-foreground text-sm">Total Users</div>
+            </div>
+            <div className="text-center" data-testid="stat-verified-agents">
+              <div className="text-2xl font-bold text-primary mb-2" data-testid="stat-verified-agents-count">
+                -
+              </div>
+              <div className="text-muted-foreground text-sm">Verified Agents</div>
+            </div>
+            <div className="text-center" data-testid="stat-total-listings">
+              <div className="text-2xl font-bold text-primary mb-2" data-testid="stat-total-listings-count">
+                -
+              </div>
+              <div className="text-muted-foreground text-sm">Total Listings</div>
+            </div>
+            <div className="text-center" data-testid="stat-pending-verifications">
+              <div className="text-2xl font-bold text-primary mb-2" data-testid="stat-pending-verifications-count">
+                {pendingAgents.length}
+              </div>
+              <div className="text-muted-foreground text-sm">Pending Reviews</div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Verification Queue */}
+      <Card data-testid="card-verification-queue">
+        <CardContent className="p-6">
+          <h3 className="text-lg font-medium text-foreground mb-4">Pending Agent Verifications</h3>
+          
+          {isLoading ? (
+            <div className="space-y-4">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="animate-pulse flex items-center justify-between p-4 border border-border rounded-lg" data-testid={`skeleton-verification-${i}`}>
+                  <div>
+                    <div className="h-4 bg-muted rounded w-32 mb-2"></div>
+                    <div className="h-3 bg-muted rounded w-24"></div>
+                  </div>
+                  <div className="flex space-x-2">
+                    <div className="h-8 w-16 bg-muted rounded"></div>
+                    <div className="h-8 w-16 bg-muted rounded"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : pendingAgents.length === 0 ? (
+            <div className="text-center py-8" data-testid="empty-verifications">
+              <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground">No pending verifications</p>
+              <p className="text-sm text-muted-foreground">All agents are up to date</p>
+            </div>
+          ) : (
+            <div className="space-y-4" data-testid="list-pending-agents">
+              {pendingAgents.map((agent: any, index: number) => (
+                <div key={agent.id} className="flex items-center justify-between p-4 border border-border rounded-lg" data-testid={`verification-${index}`}>
+                  <div>
+                    <h4 className="font-medium text-foreground" data-testid={`agent-name-${index}`}>
+                      {agent.firstName && agent.lastName ? 
+                        `${agent.firstName} ${agent.lastName}` : 
+                        agent.email || 'Anonymous Agent'
+                      }
+                    </h4>
+                    <p className="text-sm text-muted-foreground" data-testid={`agent-email-${index}`}>
+                      {agent.email}
+                    </p>
+                    {agent.businessRegNumber && (
+                      <p className="text-sm text-muted-foreground" data-testid={`agent-business-${index}`}>
+                        Business Reg: {agent.businessRegNumber}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex space-x-2">
+                    <Button 
+                      size="sm"
+                      className="bg-green-600 text-white hover:bg-green-700"
+                      onClick={() => handleVerifyAgent(agent.id)}
+                      disabled={verifyMutation.isPending}
+                      data-testid={`button-approve-${index}`}
+                    >
+                      <CheckCircle className="h-4 w-4 mr-1" />
+                      Approve
+                    </Button>
+                    <Button 
+                      size="sm"
+                      variant="outline"
+                      className="text-red-600 border-red-600 hover:bg-red-50"
+                      onClick={() => handleRejectAgent(agent.id)}
+                      disabled={verifyMutation.isPending}
+                      data-testid={`button-reject-${index}`}
+                    >
+                      <XCircle className="h-4 w-4 mr-1" />
+                      Reject
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Recent Activity */}
+      <Card data-testid="card-admin-activity">
+        <CardContent className="p-6">
+          <h3 className="text-lg font-medium text-foreground mb-4">Recent System Activity</h3>
+          <div className="space-y-4">
+            <div className="text-center py-8" data-testid="empty-activity">
+              <Home className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground">No recent activity</p>
+              <p className="text-sm text-muted-foreground">System activity will appear here</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
