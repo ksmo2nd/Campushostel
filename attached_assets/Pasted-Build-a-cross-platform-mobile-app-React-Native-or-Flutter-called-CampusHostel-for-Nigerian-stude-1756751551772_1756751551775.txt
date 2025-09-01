@@ -1,0 +1,52 @@
+Build a cross-platform mobile app (React Native or Flutter) called "CampusHostel" for Nigerian students to find and book hostels around their universities.
+
+🔹 User Roles:
+1. Students (browse, search hostels, book inspection)
+2. Verified Agents/Owners (list hostels, manage listings)
+3. Admin (verify agents, manage content)
+
+🔹 Core Features:
+- User authentication (email/password login, with role-based access)
+- Agent verification (require business registration/CAC number before they can post)
+- Hostel listings with:
+  • Title, price (per semester/year), description
+  • Photos upload
+  • Location (use Google Maps API)
+  • Availability status (Available / Not Available)
+
+- Map integration (Google Maps API):
+  • Each school has multiple hostel areas (e.g., KWASU → Westend, Safari, Chapel Road).
+  • Show these areas as markers on the map.
+  • When students search, display hostels on the map within those areas.
+
+- Booking system:
+  • Students can click “Book Inspection”
+  • System saves booking request
+  • Send email notification to agent/owner (via Gmail API or SendGrid)
+  • Booking status: Pending / Confirmed / Viewed
+
+- Dashboard:
+  • Students: View bookings
+  • Agents: Manage hostels + view booking requests
+  • Admin: Verify agents + oversee reports
+
+🔹 Tech Stack:
+- Frontend: React Native (Expo) or Flutter
+- Backend: Node.js (Express) or Supabase
+- Database: PostgreSQL
+- Maps: Google Maps API
+- Email Notifications: Gmail API / Nodemailer
+
+🔹 Database Tables:
+- users (id, role, email, password, school_id, verified_status)
+- schools (id, name, city, state)
+- locations (id, school_id, name, lat, lng)
+- hostels (id, agent_id, location_id, title, price, description, images, availability)
+- bookings (id, student_id, hostel_id, status, created_at)
+
+Deliverables:
+1. Authentication system with role-based access.
+2. Google Maps integration with predefined hostel areas for each school.
+3. Hostel listing & booking system.
+4. Email notification flow when a student books inspection.
+5. Basic UI for students, agents, and admin.
