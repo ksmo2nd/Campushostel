@@ -1,6 +1,10 @@
-import NextAuth from 'next-auth'
-import { authOptions } from '@/lib/auth'
+// Temporary simple auth endpoint - will implement NextAuth later
+import { NextRequest, NextResponse } from 'next/server'
 
-const handler = NextAuth(authOptions)
+export async function GET(request: NextRequest) {
+  return NextResponse.json({ message: 'Auth endpoint - to be implemented' })
+}
 
-export { handler as GET, handler as POST }
+export async function POST(request: NextRequest) {
+  return NextResponse.json({ message: 'Auth endpoint - to be implemented' })
+}

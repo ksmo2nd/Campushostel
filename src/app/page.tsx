@@ -1,7 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { Shield, MapPin, Calendar } from "lucide-react";
 import Link from "next/link";
 
@@ -33,9 +31,8 @@ export default function LandingPage() {
             </div>
             
             <div className="flex items-center space-x-4">
-              <ThemeToggle />
               <Link href="/auth/login">
-                <Button className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-2 rounded-lg font-medium transition-all focus-ring">
+                <Button className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-2 rounded-lg font-medium transition-all">
                   Sign In
                 </Button>
               </Link>
@@ -44,7 +41,7 @@ export default function LandingPage() {
         </div>
       </header>
 
-      {/* Hero Section with Search */}
+      {/* Hero Section */}
       <section className="relative py-20 md:py-32 overflow-hidden">
         <div className="absolute inset-0 pattern-dots opacity-20"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -59,48 +56,21 @@ export default function LandingPage() {
               </p>
             </div>
             
-            {/* Search Form */}
-            <Card className="max-w-5xl mx-auto bg-card/80 backdrop-blur-sm rounded-2xl shadow-2xl border-2 border-border/50 card-hover">
-              <CardContent className="p-8">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-semibold text-foreground mb-3">University</label>
-                    <Select>
-                      <SelectTrigger className="w-full h-12 rounded-lg border-2 focus-ring">
-                        <SelectValue placeholder="Select your university" />
-                      </SelectTrigger>
-                      <SelectContent className="rounded-lg">
-                        <SelectItem value="kwasu">Kwara State University (KWASU)</SelectItem>
-                        <SelectItem value="unilorin">University of Ilorin</SelectItem>
-                        <SelectItem value="oau">Obafemi Awolowo University</SelectItem>
-                        <SelectItem value="ui">University of Ibadan</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-foreground mb-3">Price Range</label>
-                    <Select>
-                      <SelectTrigger className="w-full h-12 rounded-lg border-2 focus-ring">
-                        <SelectValue placeholder="Any price" />
-                      </SelectTrigger>
-                      <SelectContent className="rounded-lg">
-                        <SelectItem value="50000-100000">₦50,000 - ₦100,000</SelectItem>
-                        <SelectItem value="100000-200000">₦100,000 - ₦200,000</SelectItem>
-                        <SelectItem value="200000+">₦200,000+</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-foreground mb-3">&nbsp;</label>
-                    <Link href="/hostels">
-                      <Button className="w-full h-12 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg font-semibold text-base transition-all focus-ring shadow-lg">
-                        Search Hostels
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/auth/register">
+                <Button className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-3 rounded-lg font-semibold text-base transition-all shadow-lg">
+                  Get Started
+                </Button>
+              </Link>
+              <Link href="/hostels">
+                <Button 
+                  variant="outline"
+                  className="border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground px-8 py-3 rounded-lg font-semibold text-base transition-all"
+                >
+                  Browse Hostels
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -162,29 +132,6 @@ export default function LandingPage() {
               <h3 className="text-xl font-bold text-foreground mb-4">Easy Booking</h3>
               <p className="text-muted-foreground leading-relaxed">Schedule inspections with one click and get instant confirmations from verified agents.</p>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-secondary/20 border-t border-border/50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">Ready to Find Your Perfect Hostel?</h2>
-          <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">Join thousands of students who have found their ideal accommodation through CampusHostel</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/auth/register">
-              <Button className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-3 rounded-lg font-semibold text-base transition-all focus-ring shadow-lg">
-                Get Started
-              </Button>
-            </Link>
-            <Link href="/about">
-              <Button 
-                variant="outline"
-                className="border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground px-8 py-3 rounded-lg font-semibold text-base transition-all focus-ring"
-              >
-                Learn More
-              </Button>
-            </Link>
           </div>
         </div>
       </section>

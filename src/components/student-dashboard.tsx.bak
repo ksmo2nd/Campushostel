@@ -1,0 +1,102 @@
+'use client'
+
+import { Card, CardContent } from "@/components/ui/card";
+import { useQuery } from "@tanstack/react-query";
+import { Calendar, Heart, Star } from "lucide-react";
+
+export default function StudentDashboard() {
+  const { data: bookings = [] } = useQuery({
+    queryKey: ["/api/bookings"],
+  });
+
+  const bookingsCount = bookings.length;
+  const pendingBookings = bookings.filter((b: any) => b.status === 'pending').length;
+  const confirmedBookings = bookings.filter((b: any) => b.status === 'confirmed').length;
+
+  return (
+    <div className="space-y-6" data-testid="student-dashboard">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <Card data-testid="card-bookings-count">
+          <CardContent className="p-6">
+            <div className="flex items-center">
+              <div className="bg-primary/10 p-3 rounded-lg">
+                <Calendar className="text-primary h-6 w-6" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm text-muted-foreground">Inspections Booked</p>
+                <p className="text-2xl font-bold text-foreground" data-testid="stat-bookings-count">
+                  {bookingsCount}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card data-testid="card-saved-hostels">
+          <CardContent className="p-6">
+            <div className="flex items-center">
+              <div className="bg-green-100 p-3 rounded-lg">
+                <Heart className="text-green-600 h-6 w-6" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm text-muted-foreground">Saved Hostels</p>
+                <p className="text-2xl font-bold text-foreground" data-testid="stat-saved-count">
+                  0
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card data-testid="card-reviews-given">
+          <CardContent className="p-6">
+            <div className="flex items-center">
+              <div className="bg-orange-100 p-3 rounded-lg">
+                <Star className="text-orange-600 h-6 w-6" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm text-muted-foreground">Reviews Given</p>
+                <p className="text-2xl font-bold text-foreground" data-testid="stat-reviews-count">
+                  0
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Recent Activity */}
+      <Card data-testid="card-recent-activity">
+        <CardContent className="p-6">
+          <h3 className="text-lg font-medium text-foreground mb-4">Recent Activity</h3>
+          <div className="space-y-4">
+            {bookings.length === 0 ? (
+              <div className="text-center py-8" data-testid="empty-activity">
+                <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <p className="text-muted-foreground">No recent activity</p>
+                <p className="text-sm text-muted-foreground">Start browsing hostels to see your activity here</p>
+              </div>
+            ) : (
+              bookings.slice(0, 5).map((booking: any, index: number) => (
+                <div key={booking.id} className="flex items-center" data-testid={`activity-item-${index}`}>
+                  <div className="bg-primary/10 p-2 rounded-full mr-3">
+                    <Calendar className="text-primary h-4 w-4" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-foreground" data-testid={`activity-text-${index}`}>
+                      Inspection booked at {booking.hostel?.title || 'Unknown Hostel'}
+                    </p>
+                    <p className="text-xs text-muted-foreground" data-testid={`activity-time-${index}`}>
+                      {booking.createdAt ? new Date(booking.createdAt).toLocaleDateString() : 'Recently'}
+                    </p>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
